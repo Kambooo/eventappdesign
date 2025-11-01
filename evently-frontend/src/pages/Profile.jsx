@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import client from "@/api/client";
 import { useMutation } from "@tanstack/react-query";
 import { User, Mail, Phone, MapPin, Heart, Calendar, Settings, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
+import { createPageUrl } from "../utils";
 
 const categories = [
   "Music", "Sports", "Arts", "Family", "Food & Drink",

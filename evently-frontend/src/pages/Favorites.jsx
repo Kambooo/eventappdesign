@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import client from "@/api/client";
 import { useQuery } from "@tanstack/react-query";
 import { Heart, Sparkles } from "lucide-react";
 import EventCard from "../components/EventCard";

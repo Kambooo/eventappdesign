@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import client from "@/api/client";
 import { useQuery } from "@tanstack/react-query";
 import { Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -169,3 +169,5 @@ export default function Home() {
     </div>
   );
 }
+
+console.log("Events:", events);

@@ -1,0 +1,24 @@
+###
+Frontend create
+npm create vite@latest evently-frontend -- --template react
+cd evently-frontend
+npm install
+#
+dependencies installation
+npm install react-router-dom
+npm install @tanstack/react-query
+npm install date-fns
+npm install lucide-react
+npm install tailwindcss postcss autoprefixer
+npm install class-variance-authority clsx tailwind-merge
+#
+Backend create
+mkdir evently-backend
+cd evently-backend
+npm init -y
+npm install express mongoose cors dotenv bcryptjs jsonwebtoken
+npm install multer cloudinary express-fileupload
+npm install nodemon --save-dev
+#
+npm install express mongoose cors dotenv bcryptjs jsonwebtoken multer
+npm install nodemon --save-dev
