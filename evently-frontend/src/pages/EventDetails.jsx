@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import client from "@/api/client";
+import { api } from "@/api/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
@@ -36,7 +36,7 @@ export default function EventDetails() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await api.auth.me();
         setUser(currentUser);
         setIsFavorite(currentUser.favorite_events?.includes(eventId) || false);
       } catch (error) {
@@ -49,7 +49,7 @@ export default function EventDetails() {
   const { data: event, isLoading } = useQuery({
     queryKey: ['event', eventId],
     queryFn: async () => {
-      const events = await base44.entities.Event.filter({ id: eventId });
+      const events = await api.entities.Event.filter({ id: eventId });
       return events[0];
     },
     enabled: !!eventId,
@@ -59,7 +59,7 @@ export default function EventDetails() {
     queryKey: ['relatedEvents', event?.category],
     queryFn: async () => {
       if (!event) return [];
-      const events = await base44.entities.Event.filter(
+      const events = await api.entities.Event.filter(
         { category: event.category, status: "Published" },
         "-created_date",
         4
@@ -72,7 +72,7 @@ export default function EventDetails() {
 
   const toggleFavorite = async () => {
     if (!user) {
-      base44.auth.redirectToLogin(window.location.href);
+      api.auth.redirectToLogin(window.location.href);
       return;
     }
 
@@ -81,19 +81,19 @@ export default function EventDetails() {
       ? favoriteEvents.filter(id => id !== eventId)
       : [...favoriteEvents, eventId];
 
-    await base44.auth.updateMe({ favorite_events: newFavorites });
+    await api.auth.updateMe({ favorite_events: newFavorites });
     setIsFavorite(!isFavorite);
   };
 
   const handleBookEvent = async () => {
     if (!user) {
-      base44.auth.redirectToLogin(window.location.href);
+      api.auth.redirectToLogin(window.location.href);
       return;
     }
 
     setIsBooking(true);
     try {
-      await base44.entities.Booking.create({
+      await api.entities.Booking.create({
         event_id: event.id,
         event_title: event.title,
         event_date: event.date,
@@ -107,7 +107,7 @@ export default function EventDetails() {
       });
 
       // Update attendees count
-      await base44.entities.Event.update(event.id, {
+      await api.entities.Event.update(event.id, {
         attendees_count: (event.attendees_count || 0) + numTickets
       });
 

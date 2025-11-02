@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 router.get('/', async (req, res) => {
   try {
     const events = await Event.find().sort('-createdAt');
+    console.log("Fetched events:", events); // <--- add this
     res.json(events);
   } catch (err) {
     res.status(500).json({ error: err.message });

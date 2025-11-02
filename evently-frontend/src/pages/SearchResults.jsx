@@ -25,7 +25,7 @@ export default function SearchResults() {
     queryFn: async () => {
       if (!searchQuery.trim()) return [];
 
-      const allEvents = await base44.entities.Event.filter(
+      const allEvents = await api.entities.Event.filter(
         { status: "Published" }
       );
 

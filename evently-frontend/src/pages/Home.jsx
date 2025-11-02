@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import client from "@/api/client";
 import { useQuery } from "@tanstack/react-query";
-import { Filter, X } from "lucide-react";
+import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Event } from "@/api/entities/Event"; // Your Event entity
 import HeroSection from "../components/HeroSection";
 import CategoryCarousel from "../components/CategoryCarousel";
 import FilterSidebar from "../components/FilterSidebar";
@@ -28,34 +28,46 @@ export default function Home() {
     }
   }, []);
 
+  // Fetch events using the entity
   const { data: events, isLoading, refetch } = useQuery({
-    queryKey: ['events', appliedFilters],
+    queryKey: ["events", appliedFilters],
     queryFn: async () => {
-      let allEvents = await base44.entities.Event.filter(
-        { status: "Published" },
-        "-created_date"
-      );
+      console.log("Fetching events from API...");
+      let allEvents = await Event.filter({ status: "Published" });
+      console.log("Fetched events:", allEvents);
 
-      // Apply filters
+      // Frontend filters
       if (appliedFilters.category !== "All") {
-        allEvents = allEvents.filter(e => e.category === appliedFilters.category);
+        allEvents = allEvents.filter(
+          e => e.category === appliedFilters.category
+        );
+        console.log("After category filter:", allEvents.length);
       }
+
       if (appliedFilters.date) {
-        allEvents = allEvents.filter(e => e.date === appliedFilters.date.toISOString().split('T')[0]);
+        const dateStr = appliedFilters.date.toISOString().split("T")[0];
+        allEvents = allEvents.filter(e => e.date === dateStr);
+        console.log("After date filter:", allEvents.length);
       }
+
       if (appliedFilters.maxPrice < 500) {
         allEvents = allEvents.filter(e => e.price <= appliedFilters.maxPrice);
+        console.log("After maxPrice filter:", allEvents.length);
       }
+
       if (appliedFilters.city) {
         allEvents = allEvents.filter(e =>
           e.city?.toLowerCase().includes(appliedFilters.city.toLowerCase())
         );
+        console.log("After city filter:", allEvents.length);
       }
 
       return allEvents;
     },
     initialData: [],
   });
+
+  console.log("Final events for display:", events);
 
   const handleApplyFilters = () => {
     setAppliedFilters(filters);
@@ -82,7 +94,6 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
-
       <CategoryCarousel onSelectCategory={handleSelectCategory} />
 
       <div id="events" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -96,7 +107,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Mobile Filter Toggle */}
           <Button
             onClick={() => setShowMobileFilters(!showMobileFilters)}
             className="lg:hidden bg-[#472426] hover:bg-[#ea2a33] text-white"
@@ -135,24 +145,16 @@ export default function Home() {
           {/* Events Grid */}
           <div className="flex-1">
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="bg-[#472426] rounded-2xl h-96 animate-pulse" />
                 ))}
               </div>
             ) : events.length === 0 ? (
               <div className="text-center py-20">
-                <div className="w-20 h-20 mx-auto mb-6 bg-[#472426] rounded-full flex items-center justify-center">
-                  <Filter className="w-10 h-10 text-white/40" />
-                </div>
                 <h3 className="text-2xl font-bold text-white mb-2">No Events Found</h3>
-                <p className="text-white/60 mb-6">
-                  Try adjusting your filters to see more results
-                </p>
-                <Button
-                  onClick={handleClearFilters}
-                  className="bg-[#ea2a33] hover:bg-[#ea2a33]/90 text-white"
-                >
+                <p className="text-white/60 mb-6">Try adjusting your filters to see more results</p>
+                <Button onClick={handleClearFilters} className="bg-[#ea2a33] hover:bg-[#ea2a33]/90 text-white">
                   Clear Filters
                 </Button>
               </div>
@@ -169,5 +171,3 @@ export default function Home() {
     </div>
   );
 }
-
-console.log("Events:", events);

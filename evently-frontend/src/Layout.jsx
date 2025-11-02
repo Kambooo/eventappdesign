@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import client from "@/api/client";
+import { api } from "@/api/client";
 import {
   Calendar,
   Heart,
@@ -34,7 +34,7 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await api.auth.me();
         setUser(currentUser);
       } catch (error) {
         setUser(null);
@@ -51,7 +51,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const handleLogout = async () => {
-    await base44.auth.logout();
+    await api.auth.logout();
   };
 
   const navLinks = [
@@ -209,7 +209,7 @@ export default function Layout({ children, currentPageName }) {
                 </>
               ) : (
                 <Button
-                  onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                  onClick={() => api.auth.redirectToLogin(window.location.href)}
                   className="hidden md:flex bg-[#ea2a33] hover:bg-[#ea2a33]/90 text-white accent-glow"
                 >
                   Sign In
@@ -291,7 +291,7 @@ export default function Layout({ children, currentPageName }) {
               )}
               {!user && (
                 <Button
-                  onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                  onClick={() => api.auth.redirectToLogin(window.location.href)}
                   className="w-full bg-[#ea2a33] hover:bg-[#ea2a33]/90 text-white"
                 >
                   Sign In

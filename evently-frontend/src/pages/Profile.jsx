@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import client from "@/api/client";
+import { api } from "@/api/client";
 import { useMutation } from "@tanstack/react-query";
 import { User, Mail, Phone, MapPin, Heart, Calendar, Settings, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await api.auth.me();
         setUser(currentUser);
         setProfileData({
           full_name: currentUser.full_name || "",
@@ -40,14 +40,14 @@ export default function Profile() {
           avatar_url: currentUser.avatar_url || "",
         });
       } catch (error) {
-        base44.auth.redirectToLogin(window.location.href);
+        api.auth.redirectToLogin(window.location.href);
       }
     };
     fetchUser();
   }, []);
 
   const updateProfileMutation = useMutation({
-    mutationFn: (data) => base44.auth.updateMe(data),
+    mutationFn: (data) => api.auth.updateMe(data),
     onSuccess: () => {
       alert("Profile updated successfully!");
       window.location.reload();
@@ -60,7 +60,7 @@ export default function Profile() {
 
     setIsUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await api.integrations.Core.UploadFile()
       setProfileData(prev => ({ ...prev, avatar_url: file_url }));
     } catch (error) {
       alert("Failed to upload image");

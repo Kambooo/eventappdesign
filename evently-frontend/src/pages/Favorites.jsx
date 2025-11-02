@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import client from "@/api/client";
+import { api } from "@/api/client";
 import { useQuery } from "@tanstack/react-query";
 import { Heart, Sparkles } from "lucide-react";
 import EventCard from "../components/EventCard";
@@ -10,10 +10,10 @@ export default function Favorites() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await api.auth.me();
         setUser(currentUser);
       } catch (error) {
-        base44.auth.redirectToLogin(window.location.href);
+        api.auth.redirectToLogin(window.location.href);
       }
     };
     fetchUser();
@@ -26,7 +26,7 @@ export default function Favorites() {
         return [];
       }
 
-      const allEvents = await base44.entities.Event.list();
+      const allEvents = await api.entities.Event.list();
       return allEvents.filter(event => user.favorite_events.includes(event.id));
     },
     enabled: !!user,

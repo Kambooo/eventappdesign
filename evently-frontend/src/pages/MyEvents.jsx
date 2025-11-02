@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import client from "@/api/client";
+import { api } from "@/api/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
@@ -16,10 +16,10 @@ export default function MyEvents() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await api.auth.me();
         setUser(currentUser);
       } catch (error) {
-        base44.auth.redirectToLogin(window.location.href);
+        api.auth.redirectToLogin(window.location.href);
       }
     };
     fetchUser();
@@ -29,7 +29,7 @@ export default function MyEvents() {
     queryKey: ['myEvents', user?.email],
     queryFn: async () => {
       if (!user) return [];
-      return await base44.entities.Event.filter(
+      return await api.entities.Event.filter(
         { created_by: user.email },
         "-created_date"
       );
@@ -39,7 +39,7 @@ export default function MyEvents() {
   });
 
   const deleteEventMutation = useMutation({
-    mutationFn: (eventId) => base44.entities.Event.delete(eventId),
+    mutationFn: (eventId) => api.entities.Event.delete(eventId),
     onSuccess: () => {
       queryClient.invalidateQueries(['myEvents']);
       alert("Event deleted successfully!");

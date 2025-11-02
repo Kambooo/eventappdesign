@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import client from "@/api/client";
+import { api } from "@/api/client";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
@@ -52,7 +52,7 @@ export default function CreateEvent() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await api.auth.me();
         setUser(currentUser);
         setEventData(prev => ({
           ...prev,
@@ -60,7 +60,7 @@ export default function CreateEvent() {
           organizer_email: currentUser.email,
         }));
       } catch (error) {
-        base44.auth.redirectToLogin(window.location.href);
+        api.auth.redirectToLogin(window.location.href);
       }
     };
     fetchUser();
