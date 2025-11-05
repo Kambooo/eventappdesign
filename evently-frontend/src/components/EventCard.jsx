@@ -54,7 +54,7 @@ export default function EventCard({ event, onFavoriteChange }) {
   };
 
   return (
-    <Link to={createPageUrl("EventDetails") + `?id=${event.id}`}>
+    <Link to={createPageUrl("EventDetails") + `?id=${event._id}`}>
       <div className="group relative bg-[#472426] rounded-2xl overflow-hidden smooth-transition hover:scale-[1.02] hover:shadow-xl hover:shadow-[#ea2a33]/10">
         {/* Image */}
         <div className="relative h-48 overflow-hidden">

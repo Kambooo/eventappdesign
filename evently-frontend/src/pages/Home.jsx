@@ -32,34 +32,29 @@ export default function Home() {
   const { data: events, isLoading, refetch } = useQuery({
     queryKey: ["events", appliedFilters],
     queryFn: async () => {
-      console.log("Fetching events from API...");
       let allEvents = await Event.filter({ status: "Published" });
-      console.log("Fetched events:", allEvents);
+
 
       // Frontend filters
       if (appliedFilters.category !== "All") {
         allEvents = allEvents.filter(
           e => e.category === appliedFilters.category
         );
-        console.log("After category filter:", allEvents.length);
       }
 
       if (appliedFilters.date) {
         const dateStr = appliedFilters.date.toISOString().split("T")[0];
         allEvents = allEvents.filter(e => e.date === dateStr);
-        console.log("After date filter:", allEvents.length);
       }
 
       if (appliedFilters.maxPrice < 500) {
         allEvents = allEvents.filter(e => e.price <= appliedFilters.maxPrice);
-        console.log("After maxPrice filter:", allEvents.length);
       }
 
       if (appliedFilters.city) {
         allEvents = allEvents.filter(e =>
           e.city?.toLowerCase().includes(appliedFilters.city.toLowerCase())
         );
-        console.log("After city filter:", allEvents.length);
       }
 
       return allEvents;
@@ -67,7 +62,6 @@ export default function Home() {
     initialData: [],
   });
 
-  console.log("Final events for display:", events);
 
   const handleApplyFilters = () => {
     setAppliedFilters(filters);
@@ -161,7 +155,7 @@ export default function Home() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {events.map((event) => (
-                  <EventCard key={event.id} event={event} onFavoriteChange={refetch} />
+                  <EventCard key={event._id} event={event} onFavoriteChange={refetch} />
                 ))}
               </div>
             )}

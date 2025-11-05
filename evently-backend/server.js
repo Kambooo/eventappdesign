@@ -9,12 +9,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/evently')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/evently', clientOptions)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.error('❌ MongoDB error:', err));
-
+mongoose.connection.once('open', () => {
+  console.log(`✅ Connected to MongoDB database: ${mongoose.connection.name}`);
+});
 // Test route
 app.get('/', (req, res) => {
   res.json({ message: 'Evently API is running!' });
