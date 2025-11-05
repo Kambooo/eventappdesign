@@ -16,6 +16,8 @@ import {
   Share2,
   ArrowLeft
 } from "lucide-react";
+import { Event } from "@/api/entities/Event";
+import { Booking } from "@/api/entities/Booking";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -49,17 +51,16 @@ export default function EventDetails() {
   const { data: event, isLoading } = useQuery({
     queryKey: ['event', eventId],
     queryFn: async () => {
-      const events = await api.entities.Event.filter({ id: eventId });
+      const events = await Event.filter({ id: eventId });
       return events[0];
     },
     enabled: !!eventId,
   });
-
   const { data: relatedEvents } = useQuery({
     queryKey: ['relatedEvents', event?.category],
     queryFn: async () => {
       if (!event) return [];
-      const events = await api.entities.Event.filter(
+      const events = await Event.filter(
         { category: event.category, status: "Published" },
         "-created_date",
         4
@@ -93,7 +94,7 @@ export default function EventDetails() {
 
     setIsBooking(true);
     try {
-      await api.entities.Booking.create({
+      await Booking.create({
         event_id: event.id,
         event_title: event.title,
         event_date: event.date,
@@ -107,13 +108,14 @@ export default function EventDetails() {
       });
 
       // Update attendees count
-      await api.entities.Event.update(event.id, {
+      await Event.update(event.id, {
         attendees_count: (event.attendees_count || 0) + numTickets
       });
 
       alert("Booking confirmed! Check your email for details.");
       queryClient.invalidateQueries(['event', eventId]);
     } catch (error) {
+        console.log(error)
       alert("Failed to book event. Please try again.");
     }
     setIsBooking(false);
